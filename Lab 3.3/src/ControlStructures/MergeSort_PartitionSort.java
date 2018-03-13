@@ -83,32 +83,28 @@ public class MergeSort_PartitionSort {
 		int L = a+1;
 		boolean Lb = true;
 		boolean Rb = true;
-		while(!(L > R))
+		while(L<R)
 		{
 		//	if(x[L].compareTo(P)>0)
 			
 			
 			Lb = true;
 			Rb = true;
-			if(x[L].compareTo(P)>0) {
 			while(Lb)
 			{
+				L++;
 				if((x[L].compareTo(P)>0)||(L==Piv))
 				{
 					Lb = false;
 				}
-				L++;
 			}
-			}
-			if(x[R].compareTo(P)<=0) {
 			while(Rb)
 			{
+				R--;
 				if((x[R].compareTo(P)<=0)||(R==Piv))
 				{
 					Rb = false;
 				}
-				R--;
-			}
 			}
 			swap(x, L, R);
 			for(String s : x)
