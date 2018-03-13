@@ -6,18 +6,21 @@ public class MergeSort_PartitionSort {
 
 	public static void main(String[] args)
 	{
-		String[] a = {"d", "f", "a", "g", "c", "b", "e"};
+		String[] a = {"d", "e", "f", "g", "a", "b", "c"};
 		for(String x : a)
 		{
 			System.out.print(x + ", ");
 		}
 		System.out.println();
+		
 		long in = System.nanoTime();
-		String[] b = mergeSort(a);
+		//String[] s =
+		int P = partition(a, 0, a.length-1);
 		long out = System.nanoTime();
 		long time = out - in;
-		System.out.println("mergeSort took " + time + " ns");
-		for(String x : b)
+		
+		System.out.println("partition took " + time + " ns. Pivot at n= " + P);	
+		for(String x : a)
 		{
 			System.out.print(x + ", ");
 		}
@@ -64,34 +67,131 @@ public class MergeSort_PartitionSort {
 	public static String[] partitionSort(String[] x, int a, int b)
 	{
 		int p = partition(x, a, b);
-		partitionSort(x)
-		
+		if(x.length>1)	
+		{
+				partitionSort(x, a, p-1);
+				partitionSort(x, p+1, b);
+		}
+		return x;
 	}
 	
 	public static int partition(String[] x, int a, int b)
 	{
-		String P = x[0];
-		int Piv = 0;
-		int L = a;
+		int Piv = a;
+		String P = x[a];
 		int R = b;
-		while(R > L)
+		int L = a+1;
+		boolean Lb = true;
+		boolean Rb = true;
+		while(!(L > R))
 		{
-			while(x[R].compareTo(P)<=0)
-			{	
-				R--;
-			}
-			swap(x, Piv, R);
-			Piv = R - 1;
-			while(x[L].compareTo(P)>=0)
-			{		
+		//	if(x[L].compareTo(P)>0)
+			
+			
+			Lb = true;
+			Rb = true;
+			if(x[L].compareTo(P)>0) {
+			while(Lb)
+			{
+				if((x[L].compareTo(P)>0)||(L==Piv))
+				{
+					Lb = false;
+				}
 				L++;
 			}
-			swap(x, Piv, L);
-			Piv = L + 1;
+			}
+			if(x[R].compareTo(P)<=0) {
+			while(Rb)
+			{
+				if((x[R].compareTo(P)<=0)||(R==Piv))
+				{
+					Rb = false;
+				}
+				R--;
+			}
+			}
+			swap(x, L, R);
+			for(String s : x)
+			{
+				System.out.print(s + ", ");
+			}
 		}
+		swap(x, Piv, R);
+		Piv=R;
 		return Piv;
 	}
 	
+	//public static int partition(String[] x, int a, int b)
+	//{
+		//int Piv = a;
+//		String P = x[a];
+	//	int Lmax = a + 1;
+	//	int Lmin = Lmax;
+	//	int Rmin;
+//		int Rmax;
+//	
+//		
+//		while(Lmin < b + 1)
+	//	{
+//			Lmin = Lmax;
+//			if(x[Lmin].compareTo(P)>=0)
+//			{	
+//				while((x[Lmax].compareTo(P)>=0))
+//				{
+//					Lmax++;
+//				}
+//				Rmin = Lmax;
+//				Rmax = Lmax;
+//			Lmax--;
+//				while(x[Rmax].compareTo(P)<0)
+	//			{
+	//				Rmax++;
+	//			}
+	//			Rmax--;
+	//			swapChunks(x, Lmin, Lmax, Rmin, Rmax);
+	//		}
+	//		else
+	//		{
+	//			while((x[Lmin].compareTo(P)<0))
+	//			{
+	//				Lmax++;
+	//			}
+	//			Lmax--;
+	//			swapChunk(x, Piv, Lmin, Lmax);
+	//			Piv = Lmax;
+	//			Lmin = Piv + 1;
+	//		}
+	//		Lmax++;
+	//	}
+//		return Piv;
+	//}
+	// only for when P == L-1!!!!!!!!!
+	public static void swapChunk(String[] a, int P, int L, int U)
+	{
+		String p = a[P];
+		for(int x = 0; x <= U-L; x++)
+		{
+			a[P+x] = a[L+x];
+			a[x] = p;
+		}
+	}
+	public static void swapChunks(String[] a, int Lmin, int Lmax, int Rmin, int Rmax)
+	{
+		String[] Left = new String[Lmax-Lmin];
+		for(int x = 0; x < Left.length; x++)
+		{
+			Left[x] = a[Lmin+x];
+		}
+		
+		for(int i = Lmin; i < Lmin + Rmax - Rmin; i++)
+		{
+			swap(a, Lmin + i, Rmin + i);
+		}
+		for(int x = 0; x < Left.length; x++)
+		{
+			a[Lmin+Rmax-Rmin+x] = Left[x];
+		}
+	}
 	public static void swap(int[] a, int x, int y)
 	{
 		int s = a[x];
