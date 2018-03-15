@@ -7,20 +7,23 @@ public class MergeSort_PartitionSort {
 	public static void main(String[] args)
 	{
 		String[] a = {"d", "e", "f", "g", "a", "b", "c"};
+		String[] m1 = {"a", "c", "e"};
+		String[] m2 = {"b", "d", "f"};
 		for(String x : a)
 		{
 			System.out.print(x + ", ");
 		}
+		
 		System.out.println();
 		
 		long in = System.nanoTime();
 		//String[] s =
-		int P = partition(a, 0, a.length-1);
+		String[] m = mergeSort(a);
 		long out = System.nanoTime();
 		long time = out - in;
 		
-		System.out.println("partition took " + time + " ns. Pivot at n= " + P);	
-		for(String x : a)
+		System.out.println("mergeSort took " + time + " ns.");	
+		for(String x : m)
 		{
 			System.out.print(x + ", ");
 		}
@@ -31,9 +34,15 @@ public class MergeSort_PartitionSort {
 		if(S.length >= 2)
 		{
 			String[] s1 = new String[S.length/2];
-			s1 = Arrays.copyOfRange(S, 0, (S.length/2)-1);
+			for(int i = 0; i < s1.length; i++)
+			{
+				s1[i] = S[i];
+			}
 			String[] s2 = new String[S.length-S.length/2];
-			s2 = Arrays.copyOfRange(S, S.length/2, S.length-1);
+			for(int i = s1.length; i < S.length; i++)
+			{
+				s2[i - s1.length] = S[i];
+			}
 			return merge(mergeSort(s1), mergeSort(s2));
 		}
 		else
@@ -48,18 +57,25 @@ public class MergeSort_PartitionSort {
 		String[] combo = new String[x.length + y.length];
 		int xc = 0;
 		int yc = 0;
-		while(xc + yc < (x.length + y.length) - 1)
+		while(xc + yc < combo.length)
 		{
-			if(x[xc].compareTo(y[yc])>=0)
-			{
-				combo[xc + yc] = y[yc];
-				yc++;
-			}
-			if(x[xc].compareTo(y[yc])<0)
-			{
-				combo[xc + yc] = x[xc];
-				xc++;
-			}
+			
+				while(x[xc].compareTo(y[yc])<0)
+				{
+					combo[xc + yc] = x[xc];
+					if(xc < x.length-1)
+					{
+						xc++;
+					}
+				}
+				while(x[xc].compareTo(y[yc])>=0)
+				{
+					combo[xc + yc] = y[yc];
+					if(yc < y.length-1)	
+					{
+						yc++;
+					}
+				}
 		}
 		return combo;
 	}
@@ -77,12 +93,12 @@ public class MergeSort_PartitionSort {
 	
 	public static int partition(String[] x, int a, int b)
 	{
-		int Piv = a;
-		String P = x[a];
+		int Piv = (b-a)/2;
+		String P = x[(b-a)/2];
 		int R = b;
-		int L = a+1;
-		boolean Lb = true;
-		boolean Rb = true;
+		int L = a;
+		boolean Lb;
+		boolean Rb;
 		while(L<R)
 		{
 		//	if(x[L].compareTo(P)>0)
@@ -92,19 +108,29 @@ public class MergeSort_PartitionSort {
 			Rb = true;
 			while(Lb)
 			{
-				L++;
-				if((x[L].compareTo(P)>0)||(L==Piv))
+				if(L==Piv)
+				{
+					swap(x, Piv, Piv+1);
+					Piv++;
+				}
+				if((x[L].compareTo(P)>0))
 				{
 					Lb = false;
 				}
+				L++;
 			}
 			while(Rb)
 			{
-				R--;
-				if((x[R].compareTo(P)<=0)||(R==Piv))
+				if(R==Piv)
+				{
+					swap(x, Piv, Piv-1);
+					Piv--;
+				}
+				if((x[R].compareTo(P)<=0))
 				{
 					Rb = false;
 				}
+				R--;
 			}
 			swap(x, L, R);
 			for(String s : x)
@@ -112,8 +138,6 @@ public class MergeSort_PartitionSort {
 				System.out.print(s + ", ");
 			}
 		}
-		swap(x, Piv, R);
-		Piv=R;
 		return Piv;
 	}
 	
