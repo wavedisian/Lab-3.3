@@ -168,7 +168,6 @@ public class MergeSort_PartitionSort {
 	//	}
 //		return Piv;
 	//}
-	// only for when P == L-1!!!!!!!!!
 	public static void swapChunk(String[] a, int P, int L, int U)
 	{
 		String p = a[P];
