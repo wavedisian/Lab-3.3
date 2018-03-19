@@ -18,11 +18,11 @@ public class MergeSort_PartitionSort {
 		
 		long in = System.nanoTime();
 		//String[] s =
-		String[] m = mergeSort(a);
+		String[] m = partitionSort(a, 0, a.length-1);
 		long out = System.nanoTime();
 		long time = out - in;
 		
-		System.out.println("mergeSort took " + time + " ns.");	
+		System.out.println("partitionSort took " + time + " ns.");	
 		for(String x : m)
 		{
 			System.out.print(x + ", ");
@@ -51,94 +51,77 @@ public class MergeSort_PartitionSort {
 		}
 	}
 	
-	
 	public static String[] merge(String[] x, String[] y)
 	{
 		String[] combo = new String[x.length + y.length];
 		int xc = 0;
 		int yc = 0;
-		while(xc + yc < combo.length)
-		{
-			
-				while(x[xc].compareTo(y[yc])<0)
-				{
-					combo[xc + yc] = x[xc];
-					if(xc < x.length-1)
-					{
-						xc++;
-					}
-				}
-				while(x[xc].compareTo(y[yc])>=0)
-				{
-					combo[xc + yc] = y[yc];
-					if(yc < y.length-1)	
-					{
-						yc++;
-					}
-				}
-		}
+	    int  k = 0;
+	    while ((xc < x.length) && (yc < y.length))
+	    {
+	        if (x[xc].compareTo(y[yc])<0)
+	        {
+	            combo[k] = x[xc];
+	            xc++;
+	        }
+	        else
+	        {
+	            combo[k] = y[yc];
+	            yc++;
+	        }
+	        k++;
+	    }
+	    while (xc < x.length)
+	    {
+	        combo[k] = x[xc];
+	        xc++;
+	        k++;
+	    }
+
+	    while (yc < y.length)
+	    {
+	        combo[k] = y[yc];
+	        yc++;
+	        k++;
+	    }
 		return combo;
 	}
 	
 	public static String[] partitionSort(String[] x, int a, int b)
 	{
 		int p = partition(x, a, b);
-		if(x.length>1)	
+		if(p-a>1)
 		{
-				partitionSort(x, a, p-1);
-				partitionSort(x, p+1, b);
+			partitionSort(x, a, p-1);
+		}
+		if(b-p>1)
+		{
+			partitionSort(x, p+1, b);
 		}
 		return x;
 	}
 	
 	public static int partition(String[] x, int a, int b)
 	{
-		int Piv = (b-a)/2;
-		String P = x[(b-a)/2];
+		String P = x[a];
 		int R = b;
-		int L = a;
+		int L = a + 1;
 		boolean Lb;
 		boolean Rb;
-		while(L<R)
+		while(L<R-1)
 		{
-		//	if(x[L].compareTo(P)>0)
-			
-			
-			Lb = true;
-			Rb = true;
-			while(Lb)
+			while(x[L].compareTo(P)<0)
 			{
-				if(L==Piv)
-				{
-					swap(x, Piv, Piv+1);
-					Piv++;
-				}
-				if((x[L].compareTo(P)>0))
-				{
-					Lb = false;
-				}
 				L++;
 			}
-			while(Rb)
+			while(x[R].compareTo(P)>0)
 			{
-				if(R==Piv)
-				{
-					swap(x, Piv, Piv-1);
-					Piv--;
-				}
-				if((x[R].compareTo(P)<=0))
-				{
-					Rb = false;
-				}
 				R--;
 			}
 			swap(x, L, R);
-			for(String s : x)
-			{
-				System.out.print(s + ", ");
-			}
 		}
-		return Piv;
+		swap(x, L, a);
+		return L;
 	}
 	
 	//public static int partition(String[] x, int a, int b)
